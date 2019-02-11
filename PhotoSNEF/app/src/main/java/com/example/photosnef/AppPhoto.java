@@ -87,9 +87,9 @@ public class AppPhoto extends AppCompatActivity implements SurfaceHolder.Callbac
             values.put(MediaStore.Images.Media.DATE_TAKEN, new Date().getTime());
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                 }, 123);
             }
                 // Support de stockage
