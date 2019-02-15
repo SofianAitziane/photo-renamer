@@ -15,10 +15,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static String EXTRA_MESSAGE =
+            "com.example.photosnef.MESSAGE";
     ListView mListView;
+    private ArrayList<String> Photos= new ArrayList<>();
     private ArrayList<String> nomPhotos= new ArrayList<>();
-
+    private int idItemClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,15 +28,17 @@ public class MainActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listView);
 
 
-        nomPhotos.add("Photo1");
-        nomPhotos.add("Photo2");
-        nomPhotos.add("Photo3");
-        nomPhotos.add("Photo4");
-        nomPhotos.add("Photo5");
-        nomPhotos.add("Photo6");
+        Photos.add("Vue d'ensemble site A");
+        Photos.add("Vue d'ensemble site B");
+        Photos.add("Accessibilité ODU Site A");
+        Photos.add("Accessibilité ODU Site B");
+        nomPhotos.add("A2");
+        nomPhotos.add("B2");
+        nomPhotos.add("A3");
+        nomPhotos.add("B3");
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                android.R.layout.simple_list_item_1, nomPhotos);
+                android.R.layout.simple_list_item_1, Photos);
         mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,14 +51,25 @@ public class MainActivity extends AppCompatActivity {
                     }, 200);
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "On lance l'appareil photo", Toast.LENGTH_SHORT).show();
+                    idItemClicked=(int)id;
                     Intent myIntent = new Intent(MainActivity.this, AppPhoto.class);
-                    startActivity(myIntent);
+                    myIntent.putExtra(EXTRA_MESSAGE, nomPhotos.get(idItemClicked));
+                    startActivityForResult(myIntent, 0);
                 }
 
             }
         });
 
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if( resultCode==0 ) {
+            String s = data.getStringExtra(EXTRA_MESSAGE);
+            Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
