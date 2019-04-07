@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.listView);
 
-        Photos.add("Vue d'ensemble site A");
+        /*Photos.add("Vue d'ensemble site A");
         Photos.add("Vue d'ensemble site B");
         Photos.add("Localisation des aériens Site A");
         Photos.add("Localisation des aériens Site B");
@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         Photos.add("Guide d'onde Site A");
         Photos.add("Guide d'onde Site B");
         Photos.add("Préssurisateur Site A");
-        Photos.add("Préssurisateur Site B");
+        Photos.add("Préssurisateur Site B");*/
 
-        nomPhotos.add("1A");
+        /*nomPhotos.add("1A");
         nomPhotos.add("1B");
         nomPhotos.add("2A");
         nomPhotos.add("2B");
@@ -87,8 +87,15 @@ public class MainActivity extends AppCompatActivity {
         nomPhotos.add("13A");
         nomPhotos.add("13B");
         nomPhotos.add("14A");
-        nomPhotos.add("14B");
+        nomPhotos.add("14B");*/
 
+        PhotosBDD photosBDD = new PhotosBDD(this);
+
+        photosBDD.open();
+
+        initialValuedBDD(photosBDD);
+
+        //Remplir les listes photos et nomPhotos avec les valeurs dans la base de données.
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
                 android.R.layout.simple_list_item_1, Photos);
@@ -119,8 +126,24 @@ public class MainActivity extends AppCompatActivity {
         if( resultCode==0 ) {
             String s = data.getStringExtra(EXTRA_MESSAGE);
             Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+
+            //Ouvrir la base de données pour changer le champ prise en 1 pour pouvoir changer dynamiquement la couleur de la liste si une photo est prise
+
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initialValuedBDD(PhotosBDD photoBDD){
+        Photos photo1 = new Photos("Vue d'ensemble site A", "1A", 0);
+        Photos photo2 = new Photos("Vue d'ensemble site B", "1B", 0);
+        Photos photo3 = new Photos("Localisation des aériens Site A", "2A", 0);
+        Photos photo4 = new Photos("Localisation des aériens Site B", "2B", 0);
+
+        photoBDD.insertPhoto(photo1);
+        photoBDD.insertPhoto(photo2);
+        photoBDD.insertPhoto(photo3);
+        photoBDD.insertPhoto(photo4);
+
     }
 }
