@@ -45,6 +45,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.logging.Logger.global;
+
 public class TakePictures extends AppCompatActivity {
 
     private static final String TAG = "AndroidCameraApi";
@@ -80,7 +82,7 @@ public class TakePictures extends AppCompatActivity {
 
         // intent
         final Intent intent = getIntent();
-        final String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        final String message = intent.getStringExtra(MainActivity.ID_ITEM_CLICKED);
 
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +186,7 @@ public class TakePictures extends AppCompatActivity {
             String fileName = imageName;
 
             // Metadata pour la photo
-            ContentValues values = new ContentValues();
+            final ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, fileName);
             values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
             values.put(MediaStore.Images.Media.DESCRIPTION, "Image prise par AppPhoto");
@@ -237,7 +239,8 @@ public class TakePictures extends AppCompatActivity {
                     Toast.makeText(TakePictures.this, "Saved into Gallery", Toast.LENGTH_SHORT).show();
                     //createCameraPreview();
                     Intent myIntentBack = new Intent();
-                    myIntentBack.putExtra(MainActivity.EXTRA_MESSAGE, "La photo a été sauvegardée");
+
+                    myIntentBack.putExtra(MainActivity.EXTRA_MESSAGE, values.getAsString(MediaStore.Images.Media.TITLE));
                     TakePictures.this.setResult(0, myIntentBack);
                     TakePictures.this.finish();
                 }

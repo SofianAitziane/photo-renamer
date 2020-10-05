@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 public class PhotosBDD {
 
@@ -49,13 +52,14 @@ public class PhotosBDD {
         //on lui ajoute une valeur associée à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
         values.put(COL_TITRE, photos.getTitre());
         values.put(COL_NOM, photos.getNom());
+        values.put(COL_PRISE, 1);
         //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_PHOTOS, null, values);
     }
 
     public int updatePhoto(int id, Photos photo){
-        //La mise à jour d'un livre dans la BDD fonctionne plus ou moins comme une insertion
-        //il faut simplement préciser quel livre on doit mettre à jour grâce à l'ID
+        //La mise à jour d'une photo dans la BDD fonctionne plus ou moins comme une insertion
+        //il faut simplement préciser quelle photo on doit mettre à jour grâce à l'ID
         ContentValues values = new ContentValues();
         values.put(COL_TITRE, photo.getTitre());
         values.put(COL_NOM, photo.getNom());
@@ -64,17 +68,49 @@ public class PhotosBDD {
     }
 
     public int removePhotoWithID(int id){
-        //Suppression d'un livre de la BDD grâce à l'ID
+        //Suppression d'une photo de la BDD grâce à l'ID
         return bdd.delete(TABLE_PHOTOS, COL_ID + " = " +id, null);
     }
 
     public Photos getPhotoWithTitre(String titre){
-        //Récupère dans un Cursor les valeurs correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
+        //Récupère dans un Cursor les valeurs correspondant à une photo contenue dans la BDD (ici on sélectionne la photo grâce à son titre)
         Cursor c = bdd.query(TABLE_PHOTOS, new String[] {COL_ID, COL_TITRE , COL_NOM, COL_PRISE}, COL_TITRE + " LIKE \"" + titre +"\"", null, null, null, null);
         return cursorToPhoto(c);
     }
 
-    //Cette méthode permet de convertir un cursor en un livre
+    public Photos getPhotoWithNom(String nom){
+        //Récupère dans un Cursor les valeurs correspondant à une photo contenue dans la BDD (ici on sélectionne la photo grâce à son nom)
+        Cursor c = bdd.query(TABLE_PHOTOS, new String[] {COL_ID, COL_TITRE , COL_NOM, COL_PRISE}, COL_NOM + " LIKE \"" + nom +"\"", null, null, null, null);
+        return cursorToPhoto(c);
+    }
+
+    public ArrayList<String> titrePhotos(){
+        ArrayList<String> photos = new ArrayList<>();
+        Cursor c = bdd.query(TABLE_PHOTOS, new String[] {COL_ID, COL_TITRE , COL_NOM, COL_PRISE}, null, null, null, null, null);
+        Log.d("Log du cursor", ""+c.getCount());
+        for (int i = 0; i < c.getCount(); i++) {
+            if(c.moveToNext()){
+                photos.add(c.getString(NUM_COL_TITRE));
+            }
+        }
+        //
+        return photos;
+    }
+
+    public ArrayList<String> nomPhotos(){
+        ArrayList<String> nomPhotos = new ArrayList<>();
+        Cursor c = bdd.query(TABLE_PHOTOS, new String[] {COL_ID, COL_TITRE , COL_NOM, COL_PRISE}, null, null, null, null, null);
+        Log.d("Log du cursor nomPhotos", ""+c.getCount());
+        for (int i = 0; i < c.getCount(); i++) {
+            if(c.moveToNext()){
+                nomPhotos.add(c.getString(NUM_COL_NOM));
+            }
+        }
+        //
+        return nomPhotos;
+    }
+
+    //Cette méthode permet de convertir un cursor en une photo
     private Photos cursorToPhoto(Cursor c){
         //si aucun élément n'a été retourné dans la requête, on renvoie null
         if (c.getCount() == 0)
@@ -82,7 +118,7 @@ public class PhotosBDD {
 
         //Sinon on se place sur le premier élément
         c.moveToFirst();
-        //On créé un livre
+        //On créé une photo
         Photos photo = new Photos();
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         photo.setId(c.getInt(NUM_COL_ID));
@@ -92,7 +128,7 @@ public class PhotosBDD {
         //On ferme le cursor
         c.close();
 
-        //On retourne le livre
+        //On retourne la photo
         return photo;
     }
 }
